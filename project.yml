@@ -66,6 +66,9 @@ targets:
         TARGETED_DEVICE_FAMILY: "4"
         WATCHOS_DEPLOYMENT_TARGET: "10.0"
         SKIP_INSTALL: YES
+        ARCHS: arm64
+        ONLY_ACTIVE_ARCH: YES
+        EXCLUDED_ARCHS: arm64_32
     dependencies:
       - target: "WatchAI Complication"
         embed: true
@@ -87,6 +90,9 @@ targets:
         TARGETED_DEVICE_FAMILY: "4"
         WATCHOS_DEPLOYMENT_TARGET: "10.0"
         SKIP_INSTALL: YES
+        ARCHS: arm64
+        ONLY_ACTIVE_ARCH: YES
+        EXCLUDED_ARCHS: arm64_32
 
 schemes:
   WatchAI:
