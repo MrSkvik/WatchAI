@@ -60,14 +60,16 @@ final class WatchSessionManager: NSObject, WCSessionDelegate {
         activationDidCompleteWith activationState: WCSessionActivationState,
         error: Error?
     ) {
+        let isReachable = session.isReachable
         Task { @MainActor in
-            self.isReachable = session.isReachable
+            self.isReachable = isReachable
         }
     }
 
     nonisolated func sessionReachabilityDidChange(_ session: WCSession) {
+        let isReachable = session.isReachable
         Task { @MainActor in
-            self.isReachable = session.isReachable
+            self.isReachable = isReachable
         }
     }
 
