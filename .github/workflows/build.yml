@@ -45,6 +45,8 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
             DEVELOPMENT_TEAM="" \
+            DEPLOYMENT_POSTPROCESSING=NO \
+            STRIP_INSTALLED_PRODUCT=NO \
             build
 
       - name: Package .ipa
