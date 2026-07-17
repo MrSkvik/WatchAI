@@ -37,7 +37,7 @@ jobs:
             -project WatchAI.xcodeproj \
             -scheme WatchAI \
             -configuration Release \
-            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
             -derivedDataPath build \
             -skipMacroValidation \
             -skipPackagePluginValidation \
@@ -50,7 +50,7 @@ jobs:
       - name: Package .ipa
         run: |
           set -e
-          APP_PATH=$(find build/Build/Products -maxdepth 1 -name "WatchAI.app" -print -quit)
+          APP_PATH=$(find build/Build/Products -maxdepth 2 -name "WatchAI.app" -print -quit)
           if [ -z "$APP_PATH" ]; then
             echo "Could not find built WatchAI.app under build/Build/Products" >&2
             find build/Build/Products -maxdepth 2 >&2
