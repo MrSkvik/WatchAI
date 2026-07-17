@@ -31,14 +31,14 @@ jobs:
       - name: Resolve Swift packages
         run: xcodebuild -resolvePackageDependencies -project WatchAI.xcodeproj
 
-      - name: Archive (unsigned, for device)
+      - name: Build (unsigned, for device)
         run: |
           xcodebuild \
             -project WatchAI.xcodeproj \
             -scheme WatchAI \
             -configuration Release \
             -destination "generic/platform=iOS" \
-            -archivePath build/WatchAI.xcarchive \
+            -derivedDataPath build \
             -skipMacroValidation \
             -skipPackagePluginValidation \
             CODE_SIGNING_ALLOWED=YES \
@@ -48,15 +48,15 @@ jobs:
             AD_HOC_CODE_SIGNING_ALLOWED=YES \
             DEVELOPMENT_TEAM="" \
             PROVISIONING_PROFILE_SPECIFIER="" \
-            archive
+            build
 
       - name: Package .ipa
         run: |
           set -e
-          APP_PATH="build/WatchAI.xcarchive/Products/Applications/WatchAI.app"
-          if [ ! -d "$APP_PATH" ]; then
-            echo "Could not find WatchAI.app in the archive" >&2
-            find build/WatchAI.xcarchive -maxdepth 4 >&2
+          APP_PATH=$(find build/Build/Products -maxdepth 2 -name "WatchAI.app" -print -quit)
+          if [ -z "$APP_PATH" ]; then
+            echo "Could not find built WatchAI.app under build/Build/Products" >&2
+            find build/Build/Products -maxdepth 2 >&2
             exit 1
           fi
           mkdir -p Payload
