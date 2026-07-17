@@ -40,7 +40,6 @@ targets:
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
     dependencies:
       - target: "WatchAI Watch App"
-        embed: true
       - package: MLXSwiftLM
         product: MLXLLM
       - package: MLXSwiftLM
@@ -48,24 +47,16 @@ targets:
       - package: MLXSwiftLM
         product: MLXHuggingFace
 
-  # Classic two-target WatchKit structure (pre-Xcode 14 "container" +
-  # "extension" split), not the modern single-target watchapp2 format.
-  # The single-target format hits a well-documented, still-open Xcode/
-  # XCBuild bug when archived via command-line xcodebuild outside the
-  # Xcode IDE (duplicate-output collision between the linker and the
-  # embed-prep copy step for the watch app's own binary) — this older
-  # structure predates that bug and has years of CI track record.
-  #
-  # The container ships no code of its own; all the real app code lives
-  # in the Extension target below (Watch/ + Shared/ sources, unchanged).
   WatchAI Watch App:
-    type: com.apple.product-type.application.watchapp2-container
+    type: application.watchapp2
     platform: watchOS
-    sources: []
+    sources:
+      - path: Watch
+      - path: Shared
     info:
-      path: WatchContainer/Info.plist
+      path: Watch/Info.plist
       properties:
-        WKWatchKitApp: true
+        WKApplication: true
         WKCompanionAppBundleIdentifier: com.watchai.app
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
@@ -79,34 +70,8 @@ targets:
         ONLY_ACTIVE_ARCH: YES
         EXCLUDED_ARCHS: arm64_32
     dependencies:
-      - target: "WatchAI Watch App Extension"
-        embed: true
       - target: "WatchAI Complication"
         embed: true
-
-  WatchAI Watch App Extension:
-    type: com.apple.product-type.watchkit2-extension
-    platform: watchOS
-    sources:
-      - path: Watch
-      - path: Shared
-    info:
-      path: Watch/Info.plist
-      properties:
-        WKRunsIndependentlyOfCompanionApp: false
-        NSExtension:
-          NSExtensionPointIdentifier: com.apple.watchkit
-          NSExtensionAttributes:
-            WKAppBundleIdentifier: com.watchai.app.watchkitapp
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.watchai.app.watchkitapp.extension
-        TARGETED_DEVICE_FAMILY: "4"
-        WATCHOS_DEPLOYMENT_TARGET: "10.0"
-        SKIP_INSTALL: YES
-        ARCHS: arm64
-        ONLY_ACTIVE_ARCH: YES
-        EXCLUDED_ARCHS: arm64_32
 
   WatchAI Complication:
     type: app-extension
