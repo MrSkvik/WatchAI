@@ -93,6 +93,7 @@ targets:
     info:
       path: Watch/Info.plist
       properties:
+        WKRunsIndependentlyOfCompanionApp: false
         NSExtension:
           NSExtensionPointIdentifier: com.apple.watchkit
           NSExtensionAttributes:
