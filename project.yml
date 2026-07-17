@@ -20,6 +20,16 @@ packages:
   MLXSwiftLM:
     url: https://github.com/ml-explore/mlx-swift-lm
     from: 3.31.4
+  # ModelEngine.swift imports HuggingFace/Tokenizers directly (matching
+  # Apple's own mlx-swift-examples usage) — these are transitive deps of
+  # mlx-swift-lm's MLXHuggingFace target, but Xcode's explicit-module
+  # system needs them linked directly too, not just pulled in transitively.
+  SwiftTransformers:
+    url: https://github.com/huggingface/swift-transformers
+    from: 1.3.3
+  SwiftHuggingFace:
+    url: https://github.com/huggingface/swift-huggingface
+    from: 0.9.0
 
 targets:
   WatchAI:
@@ -56,6 +66,10 @@ targets:
         product: MLXLMCommon
       - package: MLXSwiftLM
         product: MLXHuggingFace
+      - package: SwiftTransformers
+        product: Tokenizers
+      - package: SwiftHuggingFace
+        product: HuggingFace
 
   WatchAI Watch App:
     type: application.watchapp2
