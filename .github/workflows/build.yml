@@ -1,0 +1,67 @@
+name: Build unsigned IPA
+
+# Builds WatchAI without code signing on a GitHub-hosted macOS runner (which
+# already has Xcode installed). The resulting .ipa is unsigned — AltServer
+# signs it for real on install, using your own Apple ID, on your own Mac.
+# Nothing in this workflow ever touches your Apple ID or any credentials.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Resolve Swift packages
+        run: xcodebuild -resolvePackageDependencies -project WatchAI.xcodeproj
+
+      - name: Build (unsigned, for device)
+        run: |
+          xcodebuild \
+            -project WatchAI.xcodeproj \
+            -scheme WatchAI \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            build
+
+      - name: Package .ipa
+        run: |
+          set -e
+          APP_PATH=$(find build/Build/Products -maxdepth 1 -name "WatchAI.app" -print -quit)
+          if [ -z "$APP_PATH" ]; then
+            echo "Could not find built WatchAI.app under build/Build/Products" >&2
+            find build/Build/Products -maxdepth 2 >&2
+            exit 1
+          fi
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          zip -r WatchAI.ipa Payload
+          ls -lh WatchAI.ipa
+
+      - name: Upload .ipa artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WatchAI-ipa
+          path: WatchAI.ipa
+          retention-days: 14
