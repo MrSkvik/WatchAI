@@ -65,7 +65,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.watchai.app.watchkitapp
         TARGETED_DEVICE_FAMILY: "4"
         WATCHOS_DEPLOYMENT_TARGET: "10.0"
-        SKIP_INSTALL: NO
+        SKIP_INSTALL: YES
     dependencies:
       - target: "WatchAI Complication"
         embed: true
@@ -86,7 +86,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.watchai.app.watchkitapp.complication
         TARGETED_DEVICE_FAMILY: "4"
         WATCHOS_DEPLOYMENT_TARGET: "10.0"
-        SKIP_INSTALL: NO
+        SKIP_INSTALL: YES
 
 schemes:
   WatchAI:
