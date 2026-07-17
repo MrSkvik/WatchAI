@@ -93,7 +93,6 @@ schemes:
     build:
       targets:
         WatchAI: all
-        "WatchAI Watch App": all
     run:
       config: Debug
     archive:
